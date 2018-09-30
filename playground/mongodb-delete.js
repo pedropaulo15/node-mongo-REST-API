@@ -23,8 +23,23 @@ MongoClient.connect('mongodb://localhost:27017/TodoApp', (err, db) => {
   
   // This relete method also returns the deleted value.
   // findOneAndDelete
-  db.collection('Todos').findOneAndDelete({completed: false}).then( (result) => {
-    console.log(`Result: ${result}`);
-  });
+  // db.collection('Todos').findOneAndDelete({completed: false}).then( (result) => {
+  //   console.log(`Result: ${JSON.stringify(result, undefined, 2)}`);
+  // });
+
+  // Using deleteMany() on Users collection
+  // db.collection('Users').deleteMany({ name: "Pedro Santos"}).then((res) => {
+  //   console.log(`[deleteMany] Data Deleted: ${res}`);
+  // });
+
+  // Using findOneAndDelete() on Users collection
+  // db.collection('Users').findOneAndDelete({ 
+  //   _id: new ObjectID('5bb14c868cf9847ec2e1bf13')
+  // }).then((res) => {
+  //   console.log(`[findOneAndDelete] Data deleted: ${JSON.stringify(res, undefined, 2)}`)
+  // }, (err) => {
+  //   console.log(`[findOneAndDelete]: ${err}`);
+  // });
+
   // db.close();
 });
