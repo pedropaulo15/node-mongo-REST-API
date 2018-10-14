@@ -14,3 +14,6 @@ To run startup the DB and connect to it from Robo Mongo (3T) the following comma
 
 Within the project folder, run `node server/server.js` and you are ready to make HTTP requests, and you should see `Starter on port 3000...` log message on the console.
 
+# Testing
+
+To run all the test suite, just run `npm run test-watch`.

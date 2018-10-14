@@ -9,6 +9,7 @@ const app = express();
 app.use(bodyParser.json());
 
 // Creating the routes
+// POST a new to do
 app.post('/todos', (req, res) => {
   const todo = new Todo({
     text: req.body.text
@@ -21,7 +22,7 @@ app.post('/todos', (req, res) => {
   });
 });
 
-//TODO create the GET all todos route...
+// GET all to dos
 app.get('/todos', (req, res) => {
   Todo.find().then((todos) => {
     res.send({todos});
