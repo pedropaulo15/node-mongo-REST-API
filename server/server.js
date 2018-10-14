@@ -21,6 +21,10 @@ app.post('/todos', (req, res) => {
   });
 });
 
+//TODO create the GET all todos route...
+
+
+
 app.listen(3000, () => {
   console.log('Starter on port 3000...');
 });
