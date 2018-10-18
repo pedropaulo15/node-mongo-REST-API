@@ -6,6 +6,8 @@ const { mongoose } = require('./db/mongosse');
 const { Todo } = require('./models/todo');
 
 const app = express();
+const port = process.env.PORT || 3000;
+
 app.use(bodyParser.json());
 
 // Creating the routes
@@ -52,8 +54,8 @@ app.get('/todos/:id', (req, res) => {
   });
 });
 
-app.listen(3000, () => {
-  console.log('Starter on port 3000...');
+app.listen(port, () => {
+  console.log(`Starter on port ${port}...`);
 });
 
 module.exports = {
