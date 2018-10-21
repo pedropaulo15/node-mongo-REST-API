@@ -52,7 +52,6 @@ describe('POST /todos', () => {
   });
 
   it('should not create todo with invalid body data', (done) => {
-
     request(app)
       .post('/todos') // path URL
       .send({}) // content
@@ -113,4 +112,31 @@ describe('GET /todos/:id', () => {
       .expect(404)
       .end(done);
    });
+});
+
+describe('DELETE /todos/:id', () => {
+  it('should delete to do by ID', (done) => {
+    request(app)
+      .delete(`/todos/${todos[0]._id.toHexString()}`)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.todo.text).toBe(todos[0].text);
+      })
+      .end(done);
+  });
+
+  it('should return a 404 if to do not found', (done) => {
+    const id = new ObjectId();
+    request(app)
+      .delete(`/todos/${id.toHexString()}`)
+      .expect(404)
+      .end(done);
+  });
+
+  it('should return 404 for non-object ids', (done) => {
+    request(app)
+     .delete('/todos/123')
+     .expect(404)
+     .end(done);
+  });
 });
