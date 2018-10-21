@@ -115,7 +115,7 @@ describe('GET /todos/:id', () => {
 });
 
 describe('DELETE /todos/:id', () => {
-  it('should delete to do by ID', (done) => {
+  it('should DELETE to do by ID', (done) => {
     request(app)
       .delete(`/todos/${todos[0]._id.toHexString()}`)
       .expect(200)
