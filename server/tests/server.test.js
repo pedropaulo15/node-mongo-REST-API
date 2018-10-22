@@ -7,10 +7,10 @@ const { Todo } = require('./../models/todo');
 
 const todos = [{
   _id: new ObjectId(),
-  text: 'First test to do'
+  text: 'First test todo'
 }, {
   _id: new ObjectId(),
-  text: 'Second test to do'
+  text: 'Second test todo'
 }]
 
 beforeEach((done) => {
@@ -76,7 +76,7 @@ describe('POST /todos', () => {
 });
 
 describe('GET /todos', () => {
-  it('should get all to dos', (done) => {
+  it('should get all todos', (done) => {
     request(app)
       .get('/todos')
       .expect(200)
@@ -88,9 +88,9 @@ describe('GET /todos', () => {
 });
 
 describe('GET /todos/:id', () => {
-  it('should return to do doc', (done) => {
+  it('should return todo doc', (done) => {
     request(app)
-      .get(`/todos/${todos[0]._id.toHexString()}`) // converting the to do ID from int to String, in order to pass it in the URL
+      .get(`/todos/${todos[0]._id.toHexString()}`) // converting the todo ID from int to String, in order to pass it in the URL
       .expect(200)
       .expect((res) => {
         expect(res.body.todo.text).toBe(todos[0].text);
@@ -98,10 +98,10 @@ describe('GET /todos/:id', () => {
       .end(done);
   });
 
-  it('should return a 404 if to do not found', (done) => {
-    const id = new ObjectId();
+  it('should return a 404 if todo not found', (done) => {
+    const id = new ObjectId().toHexString();
     request(app)
-      .get(`/todos/${id.toHexString()}`)
+      .get(`/todos/${id}`)
       .expect(404)
       .end(done);
    });
@@ -115,20 +115,31 @@ describe('GET /todos/:id', () => {
 });
 
 describe('DELETE /todos/:id', () => {
-  it('should DELETE to do by ID', (done) => {
+  it('should DELETE todo by ID', (done) => {
+    const id = todos[0]._id.toHexString();
     request(app)
-      .delete(`/todos/${todos[0]._id.toHexString()}`)
+      .delete(`/todos/${id}`)
       .expect(200)
       .expect((res) => {
-        expect(res.body.todo.text).toBe(todos[0].text);
+        expect(res.body.todo._id).toBe(id);
       })
-      .end(done);
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
+
+        // Make sure the id was actually deleted by trying to fetch the data after it was already deleted.
+        Todo.findById(id).then((todo) => {
+          expect(todo).toNotExist();
+          done();
+        }).catch((e) => done(e));
+      });
   });
 
-  it('should return a 404 if to do not found', (done) => {
-    const id = new ObjectId();
+  it('should return a 404 if todo not found', (done) => {
+    const id = new ObjectId().toHexString();
     request(app)
-      .delete(`/todos/${id.toHexString()}`)
+      .delete(`/todos/${id}`)
       .expect(404)
       .end(done);
   });
