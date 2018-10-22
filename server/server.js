@@ -90,7 +90,7 @@ app.patch('/todos/:id', (req, res) => {
     body.completedAt = new Date().getTime(); // Setting a timestamp for competedAt 
   } else {
     body.completed = false;
-    body.completedAt = null; // clena the timestamp if the todo hasn't been completed
+    body.completedAt = null; // cleans the timestamp if the todo hasn't been completed
   }
 
   Todo.findByIdAndUpdate(id, {
