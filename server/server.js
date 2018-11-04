@@ -27,6 +27,10 @@ app.post('/todos', (req, res) => {
   });
 });
 
+// POST users
+// Clean the DOCS on the DB
+// Use the pick function
+
 // GET all todos
 app.get('/todos', (req, res) => {
   Todo.find().then((todos) => {
