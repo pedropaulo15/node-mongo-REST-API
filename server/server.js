@@ -7,6 +7,7 @@ const { ObjectId } = require('mongodb');
 
 const { mongoose } = require('./db/mongosse');
 const { Todo } = require('./models/todo');
+const { User } = require('./models/user');
 
 const app = express();
 const port = process.env.PORT;
@@ -28,8 +29,16 @@ app.post('/todos', (req, res) => {
 });
 
 // POST users
-// Clean the DOCS on the DB
-// Use the pick function
+app.post('/users', (req, res) => {
+  const body = _.pick(req.body, ['email', 'password']);
+  const user = new User(body);
+
+  user.save().then((user) => {
+    res.status(200).send(user)
+  }).catch((e) => {
+    res.status(400).send(e);
+  })
+});
 
 // GET all todos
 app.get('/todos', (req, res) => {
