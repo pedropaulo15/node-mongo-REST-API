@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
- 
-// Defining a User model
-const User = mongoose.model('User', {
+const jwt = require('jsonwebtoken');
+
+const UserSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
@@ -30,6 +30,30 @@ const User = mongoose.model('User', {
     }
   }]  
 });
+
+/**
+ * UserSchema.methods is an object, which allows to create
+ * new instance methods, in this case the method generateAuthToken
+ * is being created.
+ * 
+ * This cannot use the arrow function syntax, since it doesn't
+ * bind the `this` keyword, which in this case is necessary to
+ * access the document data.
+ */
+UserSchema.methods.generateAuthToken = function() {
+  const user = this;
+  const access = 'auth';
+  const token = jwt.sign({_id: user._id.toHexString(), access}, 'abc123').toString();
+
+  user.tokens = user.tokens.concat([{access, token}]);
+
+  return user.save().then(() => {
+    return token;
+  });
+};
+
+// Defining a User model
+const User = mongoose.model('User', UserSchema);
 
 module.exports = {
   User
