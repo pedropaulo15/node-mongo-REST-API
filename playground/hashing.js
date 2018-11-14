@@ -1,5 +1,24 @@
-const {SHA256} = require('crypto-js');
+// const {SHA256} = require('crypto-js');
+const jwt = require('jsonwebtoken');
+ /**
+  * Implementing jwt for hashing and validation
+  */
+// jwt.sign // Takes the object and create/return the hash
+// jwt.verify // Takes the tokes and validate it
 
+const data = {
+  id: 10
+}
+
+const token = jwt.sign(data, '123abc');
+console.log(token);
+
+const decoded = jwt.verify(token, '123abc');
+console.log(`decoded ${JSON.stringify(decoded)}`);
+
+/**
+ * Playing with crypto-js package
+*/
 // const message = 'I am user number 3';
 // const hash = SHA256(message).toString();
 
