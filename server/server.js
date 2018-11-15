@@ -8,6 +8,7 @@ const { ObjectId } = require('mongodb');
 const { mongoose } = require('./db/mongosse');
 const { Todo } = require('./models/todo');
 const { User } = require('./models/user');
+const { authenticate } = require('./middleware/authenticate');
 
 const app = express();
 const port = process.env.PORT;
@@ -40,6 +41,13 @@ app.post('/users', (req, res) => {
   }).catch((e) => {
     res.status(400).send(e);
   })
+});
+
+// Private route with express middleware
+app.get('/users/me', authenticate, (req, res) => {
+  // Here it is possible to access the modified req object by the middleware
+  // and just return the user from req object.
+  res.send(req.user);
 });
 
 // GET all todos

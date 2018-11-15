@@ -3,6 +3,9 @@ const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 
+const SECRET_TOKEN = 'ABC123';
+const access = 'AUTH';
+
 const UserSchema = new mongoose.Schema({
   email: {
     type: String,
@@ -63,13 +66,13 @@ UserSchema.methods.toJSON = function () {
  */
 UserSchema.methods.generateAuthToken = function() {
   const user = this;
-  const SECRET_TOKEN = 'ABC123';
+  // const SECRET_TOKEN = 'ABC123';
 
   /**
    * Both the access and token varibles will hold the values for the user's
    * tokens array declared above.
    */
-  const access = 'AUTH';
+  // const access = 'AUTH';
   const token = jwt.sign({_id: user._id.toHexString(), access}, SECRET_TOKEN).toString();
 
   /**
@@ -83,6 +86,40 @@ UserSchema.methods.generateAuthToken = function() {
     return token;
   });
 };
+
+/**
+ * Creating the findByToken method, which is going to be a model method.
+ * 
+ * Unlike the instance methods, when they are created by using 
+ * UserSchema.methods, now it uses the UserSchema.statics, which is
+ * an object that holds all model methods.
+ */
+UserSchema.statics.findByToken = function (token) {
+  const User = this;
+  let decoded;
+
+  try {
+    decoded = jwt.verify(token, SECRET_TOKEN);
+  } catch (e) {
+    /**
+     * In case the verify method cannot decode the token, a new Promisse
+     * should be returned and call the reject() method, in order to stop
+     * the execution of the findByToken method.
+     */
+    console.log(`[UserSchema.statics.findByToken] The token could not be decoded: ${e}`);
+    return Promise.reject(`[UserSchema.statics.findByToken] The token could not be decoded: ${e}`);
+  }
+
+  /**
+   *  Returning a Promise, so it is possible to call .then whenever the
+   * findByToken is called.
+   */
+  return User.findOne({
+    '_id': decoded._id,
+    'tokens.token': token,
+    'tokens.access': access
+  });
+}
 
 // Defining a User model
 const User = mongoose.model('User', UserSchema);
