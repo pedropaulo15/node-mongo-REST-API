@@ -122,6 +122,14 @@ UserSchema.statics.findByToken = function (token) {
   });
 }
 
+/**
+ * UserSchema.pre() is one of the Mangoose middleware, which can run before or 
+ * after certain events. 
+ * 
+ * In this case, this middleware is going to run before a document is saved, 
+ * which will make sure the password hashing is applied to the plain 
+ * password text, before saving it to the DB.
+ */
 UserSchema.pre('save', function(next) {
   const user = this;
 
