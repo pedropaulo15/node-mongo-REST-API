@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
+const bcrypt = require('bcryptjs');
 
 const SECRET_TOKEN = 'ABC123';
 const access = 'AUTH';
@@ -120,6 +121,30 @@ UserSchema.statics.findByToken = function (token) {
     'tokens.access': access
   });
 }
+
+/**
+ * UserSchema.pre() is one of the Mangoose middleware, which can run before or 
+ * after certain events. 
+ * 
+ * In this case, this middleware is going to run before a document is saved, 
+ * which will make sure the password hashing is applied to the plain 
+ * password text, before saving it to the DB.
+ */
+UserSchema.pre('save', function(next) {
+  const user = this;
+
+  if (user.isModified('password')){
+    bcrypt.genSalt(10, (err, salt) => {
+      bcrypt.hash(user.password, salt, (err, hash) => {
+        console.log("[bcrypt][user][middleware] - Hashing Password...");
+        user.password = hash;
+        next();
+      });
+    });
+  } else {
+    next();
+  }
+});
 
 // Defining a User model
 const User = mongoose.model('User', UserSchema);
